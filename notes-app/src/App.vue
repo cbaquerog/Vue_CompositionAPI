@@ -3,21 +3,29 @@ import { ref } from "vue";
 
 const showModal = ref(false);
 const newNote = ref("");
+const errorMessage = ref("");
 const notes = ref([]);
+const minNoteLength = ref(10);
 
 function getRandomColor() {
   return "hsl(" + Math.random() * 360 + ", 100%, 75%)";
 }
 
+//Como puedo hacer para actualizar el valor de minNoteLength y que se refleje en el template?
 const addNote = () => {
+  if (newNote.value.length < 10) {
+    errorMessage.value = "Note Needs to be at least 10 characters long";
+    return;
+  }
   notes.value.push({
     id: Math.floor(Math.random() * 1000000),
     text: newNote.value,
-    date: new Date(),
+    date: new Date().toLocaleDateString("es"),
     backgroundColor: getRandomColor(),
   });
   showModal.value = false;
   newNote.value = "";
+  errorMessage.value = "";
 };
 </script>
 
@@ -26,12 +34,16 @@ const addNote = () => {
     <div class="overlay" v-if="showModal">
       <div class="modal">
         <textarea
-          v-model="newNote"
+          v-model.trim="newNote"
           name="note"
           id="note"
           cols="30"
           rows="10"
         ></textarea>
+        <p v-if="errorMessage">
+          {{ errorMessage }}
+          <!--{{ minNoteLength.value - newNote.value.length }} characters remaining-->
+        </p>
         <button @click="addNote">Add Note</button>
         <button class="close" @click="showModal = false">Close</button>
       </div>
@@ -42,23 +54,16 @@ const addNote = () => {
         <button @click="showModal = true">+</button>
       </header>
       <div class="card-container">
-        <div class="card">
+        <div
+          v-for="note in notes"
+          :key="note.id"
+          class="card"
+          :style="{ backgroundColor: note.backgroundColor }"
+        >
           <p class="main-text">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Sit
-            consectetur libero a error perferendis et odio eum ab accusantium
-            reiciendis, inventore laborum. Tempore minima accusantium explicabo
-            rem ratione ipsa pariatur.
+            {{ note.text }}
           </p>
-          <p class="date">24/09/1996</p>
-        </div>
-        <div class="card">
-          <p class="main-text">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Sit
-            consectetur libero a error perferendis et odio eum ab accusantium
-            reiciendis, inventore laborum. Tempore minima accusantium explicabo
-            rem ratione ipsa pariatur.
-          </p>
-          <p class="date">24/09/1996</p>
+          <p class="date">{{ note.date }}</p>
         </div>
       </div>
     </div>
@@ -111,9 +116,13 @@ header button {
   display: flex;
   flex-wrap: wrap;
 }
+.main-text {
+  text-align: left;
+}
 .date {
   font-size: 12.5px;
   font-weight: bold;
+  text-align: left;
 }
 .overlay {
   position: absolute;
@@ -147,5 +156,8 @@ header button {
 .modal .close {
   background-color: red;
   margin-top: 7px;
+}
+.modal p {
+  color: red;
 }
 </style>
