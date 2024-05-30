@@ -1,18 +1,45 @@
-<script setup></script>
+<script setup>
+import { ref } from "vue";
+
+const showModal = ref(false);
+const newNote = ref("");
+const notes = ref([]);
+
+function getRandomColor() {
+  return "hsl(" + Math.random() * 360 + ", 100%, 75%)";
+}
+
+const addNote = () => {
+  notes.value.push({
+    id: Math.floor(Math.random() * 1000000),
+    text: newNote.value,
+    date: new Date(),
+    backgroundColor: getRandomColor(),
+  });
+  showModal.value = false;
+  newNote.value = "";
+};
+</script>
 
 <template>
   <main>
-    <!--<div class="overlay">
+    <div class="overlay" v-if="showModal">
       <div class="modal">
-        <textarea name="note" id="note" cols="30" rows="10"></textarea>
-        <button>Add Note</button>
-        <button class="close">Close</button>
+        <textarea
+          v-model="newNote"
+          name="note"
+          id="note"
+          cols="30"
+          rows="10"
+        ></textarea>
+        <button @click="addNote">Add Note</button>
+        <button class="close" @click="showModal = false">Close</button>
       </div>
-    </div>-->
+    </div>
     <div class="container">
       <header>
         <h1>Notes</h1>
-        <button>+</button>
+        <button @click="showModal = true">+</button>
       </header>
       <div class="card-container">
         <div class="card">
@@ -90,8 +117,8 @@ header button {
 }
 .overlay {
   position: absolute;
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  height: 100vh;
   background-color: rgba(0, 0, 0, 0.7);
   z-index: 10;
   display: flex;
