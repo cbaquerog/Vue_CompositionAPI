@@ -1,11 +1,23 @@
 <script setup>
-import { ref } from "vue";
+import { ref, computed } from "vue";
 
 const showModal = ref(false);
 const newNote = ref("");
 const errorMessage = ref("");
 const notes = ref([]);
 const minNoteLength = ref(10);
+const hoveredNoteId = ref(null);
+
+const isButtonDisabled = computed(() => {
+  if (newNote.value.length < 10) {
+    errorMessage.value = "Note Needs to be at least 10 characters long";
+    isButtonDisabled.value = true;
+    return true;
+  } else {
+    errorMessage.value = "";
+    return false;
+  }
+});
 
 function getRandomColor() {
   return "hsl(" + Math.random() * 360 + ", 100%, 75%)";
@@ -13,8 +25,7 @@ function getRandomColor() {
 
 //Como puedo hacer para actualizar el valor de minNoteLength y que se refleje en el template?
 const addNote = () => {
-  if (newNote.value.length < 10) {
-    errorMessage.value = "Note Needs to be at least 10 characters long";
+  if (isButtonDisabled.value) {
     return;
   }
   notes.value.push({
@@ -26,6 +37,18 @@ const addNote = () => {
   showModal.value = false;
   newNote.value = "";
   errorMessage.value = "";
+};
+
+const deleteNote = (id) => {
+  notes.value = notes.value.filter((note) => note.id !== id);
+};
+
+const handleMouseEnter = (id) => {
+  hoveredNoteId.value = id;
+};
+
+const handleMouseLeave = () => {
+  hoveredNoteId.value = null;
 };
 </script>
 
@@ -44,7 +67,7 @@ const addNote = () => {
           {{ errorMessage }}
           <!--{{ minNoteLength.value - newNote.value.length }} characters remaining-->
         </p>
-        <button @click="addNote">Add Note</button>
+        <button :disabled="isButtonDisabled" @click="addNote">Add Note</button>
         <button class="close" @click="showModal = false">Close</button>
       </div>
     </div>
@@ -56,10 +79,19 @@ const addNote = () => {
       <div class="card-container">
         <div
           v-for="note in notes"
-          :key="note.id"
           class="card"
+          :key="note.id"
           :style="{ backgroundColor: note.backgroundColor }"
+          @mouseenter="handleMouseEnter(note.id)"
+          @mouseleave="handleMouseLeave"
         >
+          <button
+            class="removeCard"
+            v-if="hoveredNoteId === note.id"
+            @click="deleteNote(note.id)"
+          >
+            X
+          </button>
           <p class="main-text">
             {{ note.text }}
           </p>
@@ -71,6 +103,11 @@ const addNote = () => {
 </template>
 
 <style scoped>
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
 main {
   height: 100vh;
   width: 100vw;
@@ -143,6 +180,10 @@ header button {
   display: flex;
   flex-direction: column;
 }
+.modal textarea {
+  padding: 5px;
+  font-size: 15px;
+}
 .modal button {
   padding: 10px 20px;
   font-size: 20px;
@@ -159,5 +200,25 @@ header button {
 }
 .modal p {
   color: red;
+}
+.removeCard {
+  background-color: red;
+  color: white;
+  font-weight: bold;
+  border: none;
+  padding: 5px;
+  cursor: pointer;
+  border-radius: 100%;
+  width: 25px;
+  height: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+button:disabled {
+  background-color: #cccccc;
+  color: #666666;
+  cursor: not-allowed;
+  border: 1px solid #999999;
 }
 </style>
