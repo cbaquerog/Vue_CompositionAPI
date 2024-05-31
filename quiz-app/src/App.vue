@@ -1,20 +1,29 @@
-<script setup></script>
+<script setup>
+import Quizes from "./data/quizes.json";
+import { ref, watch } from "vue";
+
+const quizes = ref(Quizes);
+const search = ref("");
+
+watch(search, () => {
+  quizes.value = Quizes.filter((quiz) =>
+    quiz.name.toLowerCase().includes(search.value.toLowerCase())
+  );
+});
+</script>
 
 <template>
   <div class="container">
     <header>
       <h1>Quizes</h1>
-      <input type="text" placeholder="Search..." />
+      <input v-model.trim="search" type="text" placeholder="Search..." />
     </header>
     <div class="options-container">
-      <div class="card">
-        <img
-          src="https://i0.wp.com/calmatters.org/wp-content/uploads/2021/08/math-curriculum.jpg?fit=2000%2C1500&ssl=1"
-          alt=""
-        />
+      <div v-for="quiz in quizes" :key="quiz.id" class="card">
+        <img :src="quiz.img" alt="" />
         <div class="card-text">
-          <h2>Math</h2>
-          <p>15 questions</p>
+          <h2>{{ quiz.name }}</h2>
+          <p>{{ quiz.questions.length }} questions</p>
         </div>
       </div>
     </div>
@@ -41,6 +50,12 @@ header input {
   background-color: rgba(128, 128, 128, 0.1);
   padding: 10px;
   border-radius: 5px;
+}
+
+.options-container {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 40px;
 }
 
 /* CARD */
