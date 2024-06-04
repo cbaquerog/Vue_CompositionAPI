@@ -3,36 +3,60 @@
     "id": 1,
     "name": "Chevy",
     "price": 15000,
-    "year": 2015
+    "year": 2015,
+    "contact": {
+      "dealer": "Laith",
+      "number": "111-111-111"
+    }
   },
   {
     "id": 2,
     "name": "Land Rover",
     "price": 85000,
-    "year": 2019
+    "year": 2019,
+    "contact": {
+      "dealer": "Daniel",
+      "number": "222-222-222"
+    }
   },
   {
     "id": 3,
     "name": "Nissan",
     "price": 23000,
-    "year": 2021
+    "year": 2021,
+    "contact": {
+      "dealer": "Pedro",
+      "number": "333-333-333"
+    }
   },
   {
     "id": 4,
     "name": "Lamborghini",
     "price": 100000,
-    "year": 2017
+    "year": 2017,
+    "contact": {
+      "dealer": "Marc",
+      "number": "444-444-444"
+    }
   },
   {
     "id": 5,
     "name": "Subaru",
     "price": 17500,
-    "year": 2018
+    "year": 2018,
+    "contact": {
+      "dealer": "Carl",
+      "number": "555-555-555"
+    }
   },
   {
     "id": 6,
     "name": "Seat Leon",
     "price": 20000,
-    "year": 2019
+    "year": 2019,
+    "contact": {
+      "dealer": "Devon",
+      "number": "666-666-666"
+    }
   }
 ]
